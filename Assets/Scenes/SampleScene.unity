@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b68271fee47a5984180588aa8ffb4b23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 5
-  height: 5
+  width: 7
+  height: 7
   tilePrefab: {fileID: 6251189045405098596, guid: b28eaf2f6ca077e4a9de920b1ba4066e, type: 3}
   candies:
   - {fileID: 4728075301295406880, guid: 7261ddd6bd6d74a49a79f72b0dfc48eb, type: 3}
@@ -166,7 +166,17 @@ MonoBehaviour:
   - {fileID: 6073113113485994003, guid: ac468f3449b8b0642965f83c0d495203, type: 3}
   - {fileID: 4756681031177616842, guid: 31345bb886b681b40bee403de2611938, type: 3}
   backGroundTileParent: {fileID: 1124361146}
-  candyParent: {fileID: 1124361146}
+  candyParent: {fileID: 1493995775}
+  allCandySO:
+  - {fileID: 11400000, guid: 64b1eba981fa0d44f9bca4a974736249, type: 2}
+  - {fileID: 11400000, guid: 0cf1c88dbbf0ce2409b5618d7380e8a9, type: 2}
+  - {fileID: 11400000, guid: 543e8566a7265ba43a522e7da323982f, type: 2}
+  - {fileID: 11400000, guid: 1135fe25da058174eb7930376cbdb4d2, type: 2}
+  - {fileID: 11400000, guid: b483b3b533cf8b3469916ddfcc84feb7, type: 2}
+  - {fileID: 11400000, guid: b5a73494d4edbc74393756b1ec46185f, type: 2}
+  - {fileID: 11400000, guid: 81d8bb82a632fd74da90989e70854786, type: 2}
+  - {fileID: 11400000, guid: 2e6fbabde23f89c46abe741037dbbaa3, type: 2}
+  - {fileID: 11400000, guid: b8bda88bcf841824b8ea6b170d74195e, type: 2}
 --- !u!4 &283365687
 Transform:
   m_ObjectHideFlags: 0
@@ -356,7 +366,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeIntensityEnabled: 0
-  m_ApplyToSortingLayers: 00000000
+  m_ApplyToSortingLayers: 00000000a34fc475
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -432,6 +442,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1493995774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1493995775}
+  m_Layer: 0
+  m_Name: CandyParent
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1493995775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1493995774}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 3.0721486, y: 1.862158, z: 0.02278655}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -440,3 +481,4 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 283365687}
   - {fileID: 1124361146}
+  - {fileID: 1493995775}

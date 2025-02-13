@@ -3,7 +3,16 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Candy_0
+  - Candy_1
+  - Candy_2
+  - Candy_3
+  - Candy_4
+  - Candy_5
+  - Candy_6
+  - Candy_7
+  - Candy_8
   layers:
   - Default
   - TransparentFX
@@ -38,6 +47,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BG
+    uniqueID: 1975799715
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4756665570667168423}
   - component: {fileID: 7092911964645466228}
+  - component: {fileID: -8586507796396160784}
   m_Layer: 0
   m_Name: Candy_7
-  m_TagString: Untagged
+  m_TagString: Candy_7
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,3 +85,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &-8586507796396160784
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6073113113485994003}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7be0cc6540b41dd41bb8722bcf82895c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 0}
+  column: 0
+  row: 0
+  targetX: 0
+  targetY: 0
