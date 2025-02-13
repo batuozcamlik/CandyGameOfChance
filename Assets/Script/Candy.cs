@@ -11,6 +11,9 @@ public class Candy : MonoBehaviour
 
     public float targetX;
     public float targetY;
+
+    public float speed=3;
+    public bool isReachFinish;
     void Start()
     {
         board=FindAnyObjectByType<Board>();
@@ -24,10 +27,13 @@ public class Candy : MonoBehaviour
         targetX = column;
         targetY = row;
 
+        bool reachX = false;
+        bool reachY = false;
+
         if(Mathf.Abs(targetX-transform.position.x)>0.1f)
         {
             Vector2 tempPos=new Vector2(targetX,transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, tempPos, 0.6f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, speed * Time.deltaTime);
             if (board.allCandies[(int)column,(int)row]!=this.gameObject)
             {
                 board.allCandies[(int)column, (int)row] = this.gameObject;
@@ -37,13 +43,14 @@ public class Candy : MonoBehaviour
         {
             Vector2 tempPos = new Vector2(targetX, transform.position.y);
             transform.position = tempPos;
+            reachX = true;
            
         }
 
         if (Mathf.Abs(targetY - transform.position.y) > 0.1f)
         {
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, tempPos, 0.6f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, speed * Time.deltaTime);
             if (board.allCandies[(int)column, (int)row] != this.gameObject)
             {
                 board.allCandies[(int)column, (int)row] = this.gameObject;
@@ -54,6 +61,16 @@ public class Candy : MonoBehaviour
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
             transform.position = tempPos;
             board.allCandies[(int)column, (int)row] = this.gameObject;
+            reachY = true;
+        }
+
+        if(reachX&&reachY)
+        {
+            isReachFinish = true;
+        }
+        else
+        {
+            isReachFinish= false;
         }
     }
 }

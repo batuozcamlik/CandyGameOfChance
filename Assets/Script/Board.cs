@@ -208,11 +208,32 @@ public class Board : MonoBehaviour
     IEnumerator FillBoardCo()
     {
         RefillBoard();
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(0.5f);
+        yield return new WaitUntil(() => checkIsReachCandy() == true);
 
         while(CheckAllMatches())
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(3f);
         }
     }
+
+    bool checkIsReachCandy()
+    {
+        bool a = true;
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i,j]!=null)
+                {
+                    a = allCandies[i, j].GetComponent<Candy>().isReachFinish;
+                }
+                else
+                {
+                    a = false;
+                }
+            }
+        }
+        return a;
+   }
 }
