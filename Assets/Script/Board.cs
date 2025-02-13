@@ -88,7 +88,8 @@ public class Board : MonoBehaviour
                 // 8 ile 9 arasýnda yapýlacak iþlem
                 Debug.Log(allCandySO[i].oneMatch * value);
 
-                destroyCandy(allCandySO[i].tag);
+                //destroyCandy(allCandySO[i].tag);
+                StartCoroutine(DestroyCandyCO(allCandySO[i].tag));
                 isMatched=true;
 
             }
@@ -96,14 +97,20 @@ public class Board : MonoBehaviour
             {
                 // 10 ile 11 arasýnda yapýlacak iþlem
                 Debug.Log(allCandySO[i].twoMatch * value);
-                destroyCandy(allCandySO[i].tag);
+
+                //destroyCandy(allCandySO[i].tag);
+                StartCoroutine(DestroyCandyCO(allCandySO[i].tag));
+
                 isMatched = true;
             }
             else if (value >= 12)
             {
                 // 12 ve yukarýsý için yapýlacak iþlem
                 Debug.Log(allCandySO[i].threeMatch * value);
-                destroyCandy(allCandySO[i].tag);
+
+                //destroyCandy(allCandySO[i].tag);
+                StartCoroutine(DestroyCandyCO(allCandySO[i].tag));
+
                 isMatched = true;
             }
         }
@@ -149,6 +156,46 @@ public class Board : MonoBehaviour
                 }
             }
         }
+
+        StartCoroutine(DecreaseRowCo());
+    }
+
+    IEnumerator DestroyCandyCO(string tag)
+    {
+        List<GameObject> allMatchCandy = new List<GameObject>();
+
+
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i, j] != null)
+                {
+                    if (allCandies[i, j].tag == tag)
+                    {
+                        allMatchCandy.Add(allCandies[i, j]);
+                        //destroyMathesAt(i, j);
+                    }
+                }
+            }
+        }
+
+
+        for (int a = 0; a < allMatchCandy.Count; a++)
+        {
+            allMatchCandy[a].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+
+        }
+
+        yield return new WaitForSeconds(3);
+
+        for (int a = 0; a < allMatchCandy.Count; a++)
+        {
+            destroyMathesAt((int)allMatchCandy[a].GetComponent<Candy>().targetX, (int)allMatchCandy[a].GetComponent<Candy>().targetY);
+
+        }
+
 
         StartCoroutine(DecreaseRowCo());
     }
