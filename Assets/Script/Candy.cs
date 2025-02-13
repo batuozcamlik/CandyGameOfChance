@@ -27,19 +27,27 @@ public class Candy : MonoBehaviour
         if(Mathf.Abs(targetX-transform.position.x)>0.1f)
         {
             Vector2 tempPos=new Vector2(targetX,transform.position.y);
-            transform.position = Vector2.Lerp(transform.position, tempPos, 0.4f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, 0.6f);
+            if (board.allCandies[(int)column,(int)row]!=this.gameObject)
+            {
+                board.allCandies[(int)column, (int)row] = this.gameObject;
+            }
         }
         else
         {
             Vector2 tempPos = new Vector2(targetX, transform.position.y);
             transform.position = tempPos;
-            board.allCandies[(int)column, (int)row] = this.gameObject;
+           
         }
 
         if (Mathf.Abs(targetY - transform.position.y) > 0.1f)
         {
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
-            transform.position = Vector2.Lerp(transform.position, tempPos, 0.4f);
+            transform.position = Vector2.Lerp(transform.position, tempPos, 0.6f);
+            if (board.allCandies[(int)column, (int)row] != this.gameObject)
+            {
+                board.allCandies[(int)column, (int)row] = this.gameObject;
+            }
         }
         else
         {

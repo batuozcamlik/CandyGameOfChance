@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using static UnityEngine.Rendering.DebugUI;
 
 
@@ -30,6 +32,19 @@ public class Board : MonoBehaviour
         SetUp();
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if(Input.GetKeyDown(KeyCode.P))
+        {
+            CheckAllMatches();
+        }
+    }
+
     public void SetUp()
     {
         for (int i = 0; i < width; i++)
@@ -54,13 +69,15 @@ public class Board : MonoBehaviour
             }
         }
 
-        CheckAllMatches();
+       
     }
 
   
 
-    public void CheckAllMatches()
+    public bool CheckAllMatches()
     {
+        bool isMatched = false;
+
         for (int i = 0; i < allCandySO.Length; i++)
         {
             int value = FindMatches(allCandySO[i].tag);
@@ -72,6 +89,7 @@ public class Board : MonoBehaviour
                 Debug.Log(allCandySO[i].oneMatch * value);
 
                 destroyCandy(allCandySO[i].tag);
+                isMatched=true;
 
             }
             else if (value >= 10 && value <= 11)
@@ -79,14 +97,18 @@ public class Board : MonoBehaviour
                 // 10 ile 11 arasýnda yapýlacak iþlem
                 Debug.Log(allCandySO[i].twoMatch * value);
                 destroyCandy(allCandySO[i].tag);
+                isMatched = true;
             }
             else if (value >= 12)
             {
                 // 12 ve yukarýsý için yapýlacak iþlem
                 Debug.Log(allCandySO[i].threeMatch * value);
                 destroyCandy(allCandySO[i].tag);
+                isMatched = true;
             }
         }
+
+        return isMatched;
     }
 
     public int FindMatches(string tag)
@@ -97,13 +119,18 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                if (allCandies[i,j].tag == tag)
+                if(allCandies[i, j] != null)
                 {
-                    count++;
+                    if (allCandies[i, j].tag == tag)
+                    {
+                        count++;
+                    }
                 }
+                
             }
         }
 
+        Debug.Log(count);
         return count;
     }
 
@@ -113,11 +140,79 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < height; j++)
             {
-                if (allCandies[i, j].tag == tag)
+                if (allCandies[i, j] != null)
                 {
-                    Destroy(allCandies[i, j]);
+                    if (allCandies[i, j].tag == tag)
+                    {
+                        destroyMathesAt(i, j);
+                    }
                 }
             }
+        }
+
+        StartCoroutine(DecreaseRowCo());
+    }
+
+    public void destroyMathesAt(int i,int j)
+    {
+        Destroy(allCandies[i, j]);
+        allCandies[i, j] = null;
+
+    }
+
+    IEnumerator DecreaseRowCo()
+    {
+        int nullCount = 0;
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i,j]==null)
+                {
+                    nullCount++;
+                }
+                else if(nullCount>0)
+                {
+                    allCandies[i,j].GetComponent<Candy>().row -= nullCount;
+                    allCandies[i, j] = null;
+                }
+            }
+            nullCount = 0;
+        }
+        yield return new WaitForSeconds(0.4f);
+        StartCoroutine(FillBoardCo());
+
+        
+    }
+
+    void RefillBoard()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i,j]==null)
+                {
+                    Vector2 tempPos = new Vector2(i, j+10);
+                    int candyToUse = Random.Range(0, candies.Length);
+
+                    GameObject candy = Instantiate(candies[candyToUse],tempPos,Quaternion.identity);
+                    candy.GetComponent<Candy>().targetX = i;
+                    candy.GetComponent<Candy>().targetY = j;
+                    allCandies[i, j] = candy;
+                }
+            }
+        }
+    }
+
+    IEnumerator FillBoardCo()
+    {
+        RefillBoard();
+        yield return new WaitForSeconds(0.5f);
+
+        while(CheckAllMatches())
+        {
+            yield return new WaitForSeconds(1f);
         }
     }
 }
