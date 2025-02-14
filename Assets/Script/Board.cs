@@ -12,6 +12,7 @@ public class Board : MonoBehaviour
 {
     public int width;
     public int height;
+    public bool canPlay = true;
 
     [Header("Tile")]
     public GameObject tilePrefab;
@@ -26,9 +27,15 @@ public class Board : MonoBehaviour
 
     [Header("CheckSystem")]
     public CandyScribleObject[] allCandySO;
-    
+
+    [Header("MoneySystem")]
+    public MoneyManager moneyMng;
+
+
     void Start()
     {
+        moneyMng=FindAnyObjectByType<MoneyManager>();
+
         allTiles = new BackGroundTile[width, height];
         allCandies = new GameObject[width, height];
         SetUp();
@@ -49,9 +56,14 @@ public class Board : MonoBehaviour
 
     public void Play()
     {
+        if(!canPlay)
+        {
+            return;
+        }
         if (allCandies[0, 0] != null)
         {
             StartCoroutine(ResetMap());
+            canPlay = false;
         }
     }
 
@@ -65,9 +77,6 @@ public class Board : MonoBehaviour
                 GameObject backgroundTile= Instantiate(tilePrefab, tempPosition, Quaternion.identity);
                 backgroundTile.transform.SetParent(backGroundTileParent);
                 backgroundTile.name="("+i+","+j+")";
-
-           
-                
 
             }
         }
@@ -120,6 +129,7 @@ public class Board : MonoBehaviour
                 //destroyCandy(allCandySO[i].tag);
                 StartCoroutine(DestroyCandyCO(allCandySO[i].tag));
                 isMatched=true;
+                moneyMng.AddMoney(allCandySO[i].oneMatch * value, allCandySO[i].tag);
 
             }
             else if (value >= 10 && value <= 11)
@@ -131,6 +141,8 @@ public class Board : MonoBehaviour
                 StartCoroutine(DestroyCandyCO(allCandySO[i].tag));
 
                 isMatched = true;
+
+                moneyMng.AddMoney(allCandySO[i].twoMatch * value, allCandySO[i].tag);
             }
             else if (value >= 12)
             {
@@ -141,6 +153,8 @@ public class Board : MonoBehaviour
                 StartCoroutine(DestroyCandyCO(allCandySO[i].tag));
 
                 isMatched = true;
+
+                moneyMng.AddMoney(allCandySO[i].threeMatch * value, allCandySO[i].tag);
             }
         }
 
@@ -353,10 +367,11 @@ public class Board : MonoBehaviour
     {
         for (int i = 0; i < width; i++)
         {
-            yield return new WaitForSeconds(0.2f);
+            yield return new WaitForSeconds(0.05f);
 
             for (int j = 0; j < height; j++)
             {
+                yield return new WaitForSeconds(0.05f);
                 if (allCandies[i, j] != null)
                 {
                     allCandies[i, j].GetComponent<Candy>().targetY = j - 10;
@@ -385,6 +400,7 @@ public class Board : MonoBehaviour
 
 
         CheckAllMatches();
+        canPlay = true;
     }
 
     bool checkIsReachCandy()

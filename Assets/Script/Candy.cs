@@ -16,6 +16,7 @@ public class Candy : MonoBehaviour
     public bool isReachFinish;
 
     public bool isMatched = false;
+   
     void Start()
     {
         board=FindAnyObjectByType<Board>();
