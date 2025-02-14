@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 7
-  height: 7
+  height: 6
   tilePrefab: {fileID: 6251189045405098596, guid: b28eaf2f6ca077e4a9de920b1ba4066e, type: 3}
   candies:
   - {fileID: 4728075301295406880, guid: 7261ddd6bd6d74a49a79f72b0dfc48eb, type: 3}

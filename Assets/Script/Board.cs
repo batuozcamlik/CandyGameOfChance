@@ -1,5 +1,7 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -41,7 +43,15 @@ public class Board : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.P))
         {
-            CheckAllMatches();
+            Play();
+        }
+    }
+
+    public void Play()
+    {
+        if (allCandies[0, 0] != null)
+        {
+            StartCoroutine(ResetMap());
         }
     }
 
@@ -56,20 +66,39 @@ public class Board : MonoBehaviour
                 backgroundTile.transform.SetParent(backGroundTileParent);
                 backgroundTile.name="("+i+","+j+")";
 
-                int candyToUse=Random.Range(0, candies.Length);
+           
+                
+
+            }
+        }
+
+        StartCoroutine(StartCandySpawn());
+
+
+    }
+
+    IEnumerator StartCandySpawn()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            yield return new WaitForSeconds(0.1f);
+
+            for (int j = 0; j < height; j++)
+            {
+                Vector2 tempPosition = new Vector2(i, j);
+
+                int candyToUse = Random.Range(0, candies.Length);
                 float additionalHeight = tempPosition.y + 10;
-                GameObject candy = Instantiate(candies[candyToUse], new Vector2(tempPosition.x,additionalHeight), Quaternion.identity);
+                GameObject candy = Instantiate(candies[candyToUse], new Vector2(tempPosition.x, additionalHeight), Quaternion.identity);
 
                 candy.GetComponent<Candy>().targetX = tempPosition.x;
                 candy.GetComponent<Candy>().targetY = tempPosition.y;
 
                 candy.transform.SetParent(candyParent);
                 candy.name = "Candy " + "(" + i + "," + j + ")";
-                allCandies[i,j] = candy;
+                allCandies[i, j] = candy;
             }
         }
-
-       
     }
 
   
@@ -81,7 +110,7 @@ public class Board : MonoBehaviour
         for (int i = 0; i < allCandySO.Length; i++)
         {
             int value = FindMatches(allCandySO[i].tag);
-            //Debug.Log(allCandySO[i]+" Sekerden"+ value + "adet var");
+            Debug.Log(allCandySO[i]+" Sekerden"+ value + "adet var");
 
             if (value >= 8 && value <= 9)
             {
@@ -137,10 +166,10 @@ public class Board : MonoBehaviour
             }
         }
 
-        Debug.Log(count);
+        Debug.Log(tag+" : "+count);
         return count;
     }
-
+    /*
     public void destroyCandy(string tag)
     {
         for (int i = 0; i < width; i++)
@@ -158,7 +187,7 @@ public class Board : MonoBehaviour
         }
 
         StartCoroutine(DecreaseRowCo());
-    }
+    }*/
 
     IEnumerator DestroyCandyCO(string tag)
     {
@@ -174,7 +203,8 @@ public class Board : MonoBehaviour
                 {
                     if (allCandies[i, j].tag == tag)
                     {
-                        allMatchCandy.Add(allCandies[i, j]);
+                        //allMatchCandy.Add(allCandies[i, j]);
+                        allCandies[i, j].GetComponent<Candy>().isMatched = true;
                         //destroyMathesAt(i, j);
                     }
                 }
@@ -182,18 +212,62 @@ public class Board : MonoBehaviour
         }
 
 
-        for (int a = 0; a < allMatchCandy.Count; a++)
+        for (int i = 0; i < width; i++)
         {
-            allMatchCandy[a].transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i, j] != null)
+                {
+                    if (allCandies[i, j].GetComponent<Candy>().isMatched == true)
+                    {
+                        allCandies[i, j].transform.DOScale(1.5f, 1);
+                    }
 
+                }
+            }
         }
 
-        yield return new WaitForSeconds(3);
 
+        yield return new WaitForSeconds(1);
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i, j] != null)
+                {
+                    if (allCandies[i, j].GetComponent<Candy>().isMatched == true)
+                    {
+                        allCandies[i, j].transform.DOScale(1, 1);
+                    }
+
+                }
+            }
+        }
+
+        yield return new WaitForSeconds(1);
+
+        /*
         for (int a = 0; a < allMatchCandy.Count; a++)
         {
             destroyMathesAt((int)allMatchCandy[a].GetComponent<Candy>().targetX, (int)allMatchCandy[a].GetComponent<Candy>().targetY);
 
+        }
+        */
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i, j] != null)
+                {
+                    if(allCandies[i, j].GetComponent<Candy>().isMatched==true)
+                    {
+                        destroyMathesAt(i, j);
+                    }
+                    
+                }
+            }
         }
 
 
@@ -202,7 +276,7 @@ public class Board : MonoBehaviour
 
     public void destroyMathesAt(int i,int j)
     {
-        Destroy(allCandies[i, j]);
+        Destroy(allCandies[i, j].gameObject);
         allCandies[i, j] = null;
 
     }
@@ -220,7 +294,7 @@ public class Board : MonoBehaviour
                 }
                 else if(nullCount>0)
                 {
-                    allCandies[i,j].GetComponent<Candy>().row -= nullCount;
+                    allCandies[i,j].GetComponent<Candy>().targetY -= nullCount;
                     allCandies[i, j] = null;
                 }
             }
@@ -246,6 +320,7 @@ public class Board : MonoBehaviour
                     GameObject candy = Instantiate(candies[candyToUse],tempPos,Quaternion.identity);
                     candy.GetComponent<Candy>().targetX = i;
                     candy.GetComponent<Candy>().targetY = j;
+                    candy.gameObject.transform.SetParent(candyParent);
                     allCandies[i, j] = candy;
                 }
             }
@@ -256,12 +331,60 @@ public class Board : MonoBehaviour
     {
         RefillBoard();
         //yield return new WaitForSeconds(0.5f);
+
+        Debug.LogWarning(checkIsReachCandy());
+
         yield return new WaitUntil(() => checkIsReachCandy() == true);
 
         while(CheckAllMatches())
         {
             yield return new WaitForSeconds(3f);
         }
+
+        yield return new WaitForSeconds(1);
+
+        
+
+    }
+
+   
+
+    IEnumerator ResetMap()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            yield return new WaitForSeconds(0.2f);
+
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i, j] != null)
+                {
+                    allCandies[i, j].GetComponent<Candy>().targetY = j - 10;
+                }
+
+            }
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if (allCandies[i, j].gameObject!=null)
+                {
+                    destroyMathesAt(i, j);
+                }
+
+            }
+        }
+
+        StartCoroutine(StartCandySpawn());
+
+        yield return new WaitForSeconds(2f);
+
+
+        CheckAllMatches();
     }
 
     bool checkIsReachCandy()

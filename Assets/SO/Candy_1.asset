@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 401a0859f477083469166b03fab193d5, type: 3}
   m_Name: Candy_1
   m_EditorClassIdentifier: 
-  tag: Candy_0
+  tag: Candy_1
   oneMatch: 0.8
   twoMatch: 1.2
   threeMatch: 8

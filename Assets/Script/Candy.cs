@@ -12,8 +12,10 @@ public class Candy : MonoBehaviour
     public float targetX;
     public float targetY;
 
-    public float speed=3;
+    public float speed=10000;
     public bool isReachFinish;
+
+    public bool isMatched = false;
     void Start()
     {
         board=FindAnyObjectByType<Board>();
@@ -24,20 +26,28 @@ public class Candy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        targetX = column;
-        targetY = row;
+        row = targetY;
+        column = targetX;
 
         bool reachX = false;
         bool reachY = false;
 
-        if(Mathf.Abs(targetX-transform.position.x)>0.1f)
+        if(Mathf.Abs(targetX-transform.position.x)>0.01f)
         {
             Vector2 tempPos=new Vector2(targetX,transform.position.y);
             transform.position = Vector2.Lerp(transform.position, tempPos, speed * Time.deltaTime);
-            if (board.allCandies[(int)column,(int)row]!=this.gameObject)
+
+
+            if (column >= 0 && row >= 0)
             {
-                board.allCandies[(int)column, (int)row] = this.gameObject;
+                if (board.allCandies[(int)column, (int)row] != this.gameObject)
+                {
+                    board.allCandies[(int)column, (int)row] = this.gameObject;
+                }
             }
+
+
+           
         }
         else
         {
@@ -47,20 +57,24 @@ public class Candy : MonoBehaviour
            
         }
 
-        if (Mathf.Abs(targetY - transform.position.y) > 0.1f)
+        if (Mathf.Abs(targetY - transform.position.y) > 0.01f)
         {
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
             transform.position = Vector2.Lerp(transform.position, tempPos, speed * Time.deltaTime);
-            if (board.allCandies[(int)column, (int)row] != this.gameObject)
+
+            if(column>=0 && row>=0)
             {
-                board.allCandies[(int)column, (int)row] = this.gameObject;
+                if (board.allCandies[(int)column, (int)row] != this.gameObject)
+                {
+                    board.allCandies[(int)column, (int)row] = this.gameObject;
+                }
             }
+            
         }
         else
         {
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
             transform.position = tempPos;
-            board.allCandies[(int)column, (int)row] = this.gameObject;
             reachY = true;
         }
 
