@@ -15,10 +15,14 @@ public class MoneyManager : MonoBehaviour
     public TextMeshProUGUI betText;
 
     public GameObject moneyAddText;
+
+    public float currentGameSafee;
     void Start()
     {
         board=FindAnyObjectByType<Board>();
         UpdateText();
+
+        //PlayerPrefs.SetFloat("currentGameSafe", 0);
     }
 
     public void Play()
@@ -27,6 +31,7 @@ public class MoneyManager : MonoBehaviour
         {
             board.Play();
             currentMoney -= currentBet;
+            UpdateDataBase(currentBet);
             UpdateText();
         }
 
@@ -35,6 +40,8 @@ public class MoneyManager : MonoBehaviour
     public void AddMoney(float money,string tag)
     {
         currentMoney += money*currentBet;
+
+        UpdateDataBase(-(money * currentBet));
         Debug.LogWarning(money + "TL Eklendi");
 
 
@@ -44,6 +51,17 @@ public class MoneyManager : MonoBehaviour
         moneyText.transform.GetChild(0).gameObject.GetComponent<TextMeshProUGUI>().text = "+"+(money * currentBet).ToString();
         UpdateText();
 
+
+    }
+
+    public void UpdateDataBase(float money)
+    {
+        Debug.LogWarning("Update update");
+        float currentGameSafe = PlayerPrefs.GetFloat("currentGameSafe");
+        currentGameSafe += money;
+        PlayerPrefs.SetFloat("currentGameSafe", currentGameSafe);
+
+        
 
     }
 
@@ -96,6 +114,6 @@ public class MoneyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        currentGameSafee = PlayerPrefs.GetFloat("currentGameSafe");
     }
 }

@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using static UnityEngine.Rendering.DebugUI;
 
 
@@ -13,7 +14,10 @@ public class Board : MonoBehaviour
     public int width;
     public int height;
     public bool canPlay = true;
+
+    [Header("Game Speed")]
     public float gameSpeed=1;
+    public Toggle gameSpeedToggle;
 
     [Header("Tile")]
     public GameObject tilePrefab;
@@ -26,7 +30,7 @@ public class Board : MonoBehaviour
     public Transform backGroundTileParent;
     public Transform candyParent;
 
-    [Header("CheckSystem")]
+    [Header("Check System")]
     public CandyScribleObject[] allCandySO;
 
     [Header("MoneySystem")]
@@ -238,6 +242,7 @@ public class Board : MonoBehaviour
                     if (allCandies[i, j].GetComponent<Candy>().isMatched == true)
                     {
                         allCandies[i, j].transform.DOScale(1.5f, 1);
+                        allCandies[i, j].transform.DORotate(new Vector3(0, 0, 270), 2);
                     }
 
                 }
@@ -425,4 +430,16 @@ public class Board : MonoBehaviour
         }
         return a;
    }
+
+    public void changeGameSpeed()
+    {
+        if(gameSpeedToggle.isOn)
+        {
+            gameSpeed = 2;
+        }
+        else
+        {
+            gameSpeed = 1;
+        }
+    }
 }

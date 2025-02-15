@@ -16,3 +16,4 @@ MonoBehaviour:
   oneMatch: 1.5
   twoMatch: 2
   threeMatch: 12
+  candySprite: {fileID: 21300000, guid: 503939c581981244388adaafe5bac3b0, type: 3}

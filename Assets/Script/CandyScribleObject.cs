@@ -10,4 +10,5 @@ public class CandyScribleObject : ScriptableObject
     public float oneMatch;
     public float twoMatch;
     public float threeMatch;
+    public Sprite candySprite;
 }

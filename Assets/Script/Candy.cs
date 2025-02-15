@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -38,6 +39,8 @@ public class Candy : MonoBehaviour
             Vector2 tempPos=new Vector2(targetX,transform.position.y);
             transform.position = Vector2.Lerp(transform.position, tempPos, speed * Time.deltaTime);
 
+            
+
 
             if (column >= 0 && row >= 0)
             {
@@ -55,7 +58,8 @@ public class Candy : MonoBehaviour
             Vector2 tempPos = new Vector2(targetX, transform.position.y);
             transform.position = tempPos;
             reachX = true;
-           
+            
+
         }
 
         if (Mathf.Abs(targetY - transform.position.y) > 0.01f)
@@ -63,7 +67,9 @@ public class Candy : MonoBehaviour
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
             transform.position = Vector2.Lerp(transform.position, tempPos, speed * Time.deltaTime);
 
-            if(column>=0 && row>=0)
+           
+
+            if (column>=0 && row>=0)
             {
                 if (board.allCandies[(int)column, (int)row] != this.gameObject)
                 {
@@ -77,6 +83,7 @@ public class Candy : MonoBehaviour
             Vector2 tempPos = new Vector2(transform.position.x, targetY);
             transform.position = tempPos;
             reachY = true;
+           
         }
 
         if(reachX&&reachY)
