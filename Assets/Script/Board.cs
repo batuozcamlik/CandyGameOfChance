@@ -1,11 +1,13 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.XR;
 using static UnityEngine.Rendering.DebugUI;
 
 
@@ -35,6 +37,11 @@ public class Board : MonoBehaviour
 
     [Header("MoneySystem")]
     public MoneyManager moneyMng;
+
+    [Header("Free Spin System")]
+    [Range(0f, 100f)]
+    public int freeSpinPosiblty;
+    public GameObject freeSpinGameObj;
 
 
     void Start()
@@ -95,28 +102,105 @@ public class Board : MonoBehaviour
 
     IEnumerator StartCandySpawn()
     {
+        bool checkFreeSpin = FreeSpinCalculateProb();
+        List<Vector2> freeSpinSpawnPos = new List<Vector2>();
+
+        if(checkFreeSpin)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Vector2 newPos;
+                do
+                {
+                    newPos = new Vector2(Random.Range(0, width), Random.Range(0, height));
+                }
+                while (freeSpinSpawnPos.Contains(newPos)); // Eðer liste zaten bu pozisyonu içeriyorsa, tekrar üret
+
+                freeSpinSpawnPos.Add(newPos);
+            }
+        }
+        else
+        {
+            checkFreeSpin = true;
+            for (int i = 0; i < Random.Range(0,4); i++)
+            {
+                Vector2 newPos;
+                do
+                {
+                    newPos = new Vector2(Random.Range(0, width), Random.Range(0, height));
+                }
+                while (freeSpinSpawnPos.Contains(newPos)); // Eðer liste zaten bu pozisyonu içeriyorsa, tekrar üret
+
+                freeSpinSpawnPos.Add(newPos);
+            }
+        }
+        
+        
+
         for (int i = 0; i < width; i++)
         {
             yield return new WaitForSeconds(0.1f);
 
             for (int j = 0; j < height; j++)
             {
-                Vector2 tempPosition = new Vector2(i, j);
 
-                int candyToUse = Random.Range(0, candies.Length);
-                float additionalHeight = tempPosition.y + 10;
-                GameObject candy = Instantiate(candies[candyToUse], new Vector2(tempPosition.x, additionalHeight), Quaternion.identity);
+                if(checkFreeSpin)
+                {
+                    bool isSpawn = false;
 
-                candy.GetComponent<Candy>().targetX = tempPosition.x;
-                candy.GetComponent<Candy>().targetY = tempPosition.y;
+                    for (int a = 0; a < freeSpinSpawnPos.Count; a++)
+                    {
+                        if(new Vector2(i, j) == freeSpinSpawnPos[a] &&isSpawn==false)
+                        {
+                            isSpawn = true;
+                            yield return new WaitForSeconds(0.1f);
+                          
 
-                candy.transform.SetParent(candyParent);
-                candy.name = "Candy " + "(" + i + "," + j + ")";
-                allCandies[i, j] = candy;
+                            GameObject freeSpinObj = Instantiate(freeSpinGameObj, new Vector2(i, j + 10), Quaternion.identity);
+
+                            freeSpinObj.GetComponent<Candy>().targetX = i;
+                            freeSpinObj.GetComponent<Candy>().targetY = j;
+
+                            allCandies[i, j] = freeSpinObj;
+                        }
+                    }
+                }
+
+                if(allCandies[i, j]==null)
+                {
+                    Vector2 tempPosition = new Vector2(i, j);
+
+                    int candyToUse = Random.Range(0, candies.Length);
+                    float additionalHeight = tempPosition.y + 10;
+                    GameObject candy = Instantiate(candies[candyToUse], new Vector2(tempPosition.x, additionalHeight), Quaternion.identity);
+
+                    candy.GetComponent<Candy>().targetX = tempPosition.x;
+                    candy.GetComponent<Candy>().targetY = tempPosition.y;
+
+                    candy.transform.SetParent(candyParent);
+                    candy.name = "Candy " + "(" + i + "," + j + ")";
+                    allCandies[i, j] = candy;
+                }
+                
+               
             }
         }
     }
 
+    public bool FreeSpinCalculateProb()
+    {
+        int a = Random.Range(0, 101); 
+
+        if (a < freeSpinPosiblty) 
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+
+    }
   
 
     public bool CheckAllMatches()
@@ -442,4 +526,6 @@ public class Board : MonoBehaviour
             gameSpeed = 1;
         }
     }
+
+    
 }

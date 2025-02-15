@@ -423,6 +423,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2e6fbabde23f89c46abe741037dbbaa3, type: 2}
   - {fileID: 11400000, guid: b8bda88bcf841824b8ea6b170d74195e, type: 2}
   moneyMng: {fileID: 0}
+  freeSpinPosiblty: 0
+  freeSpinGameObj: {fileID: 4756681031177616842, guid: d3208d9dccf40ad4b8b1af4224248b8b, type: 3}
 --- !u!4 &283365687
 Transform:
   m_ObjectHideFlags: 0
@@ -2418,7 +2420,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: -5
+  m_text: '-'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1d173600e13cab4eb7313e5c56d0291, type: 2}
   m_sharedMaterial: {fileID: 9190842368288079346, guid: a1d173600e13cab4eb7313e5c56d0291, type: 2}
@@ -2445,13 +2447,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -3005,7 +3007,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: +5
+  m_text: +
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1d173600e13cab4eb7313e5c56d0291, type: 2}
   m_sharedMaterial: {fileID: 9190842368288079346, guid: a1d173600e13cab4eb7313e5c56d0291, type: 2}
@@ -3032,13 +3034,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
