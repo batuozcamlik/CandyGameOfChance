@@ -13,6 +13,7 @@ public class Board : MonoBehaviour
     public int width;
     public int height;
     public bool canPlay = true;
+    public float gameSpeed=1;
 
     [Header("Tile")]
     public GameObject tilePrefab;
@@ -43,6 +44,8 @@ public class Board : MonoBehaviour
 
     private void Update()
     {
+        Time.timeScale = gameSpeed;
+
         if(Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(0);
@@ -365,13 +368,13 @@ public class Board : MonoBehaviour
 
     IEnumerator ResetMap()
     {
-        for (int i = 0; i < width; i++)
+        for (int j = 0; j < height; j++)
         {
-            yield return new WaitForSeconds(0.05f);
+            yield return new WaitForSeconds(0.01f);
 
-            for (int j = 0; j < height; j++)
+            for (int i = 0; i < width; i++)
             {
-                yield return new WaitForSeconds(0.05f);
+                yield return new WaitForSeconds(0.01f);
                 if (allCandies[i, j] != null)
                 {
                     allCandies[i, j].GetComponent<Candy>().targetY = j - 10;
@@ -380,7 +383,7 @@ public class Board : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
 
         for (int i = 0; i < width; i++)
         {
