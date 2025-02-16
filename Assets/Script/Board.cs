@@ -43,6 +43,9 @@ public class Board : MonoBehaviour
     public int freeSpinPosiblty;
     public GameObject freeSpinGameObj;
 
+    [Header("Info")]
+    private string testInfoString;
+
 
     void Start()
     {
@@ -206,11 +209,14 @@ public class Board : MonoBehaviour
     public bool CheckAllMatches()
     {
         bool isMatched = false;
+        testInfoString = "";
 
         for (int i = 0; i < allCandySO.Length; i++)
         {
             int value = FindMatches(allCandySO[i].tag);
-            Debug.Log(allCandySO[i]+" Sekerden"+ value + "adet var");
+            //Debug.Log(allCandySO[i]+" Sekerden"+ value + "adet var");
+
+            testInfoString += allCandySO[i].tag + " Sekerden " + value + " adet var " + "\n";
 
             if (value >= 8 && value <= 9)
             {
@@ -449,11 +455,14 @@ public class Board : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
-        
+        //canPlay = true;
+        Debug.Log("Refill!");
+
+
 
     }
 
-   
+
 
     IEnumerator ResetMap()
     {
@@ -527,5 +536,16 @@ public class Board : MonoBehaviour
         }
     }
 
-    
+
+
+    void OnGUI()
+    {
+        // GUI stilini belirle
+        GUIStyle stil = new GUIStyle();
+        stil.fontSize = 20; // Yazý boyutu
+        stil.normal.textColor = Color.black; // Yazý rengi
+
+        // Ekranýn sol üst köþesine metni yazdýr
+        GUI.Label(new Rect(10, 10, 500, 30), testInfoString, stil);
+    }
 }
