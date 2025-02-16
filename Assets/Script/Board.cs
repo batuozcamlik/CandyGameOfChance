@@ -2,13 +2,14 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.XR;
-using static UnityEngine.Rendering.DebugUI;
+
 
 
 public class Board : MonoBehaviour
@@ -28,6 +29,7 @@ public class Board : MonoBehaviour
     [Header("Candy")]
     public GameObject[] candies;
     public GameObject[,] allCandies;
+
     [Header("Parent")]
     public Transform backGroundTileParent;
     public Transform candyParent;
@@ -45,6 +47,13 @@ public class Board : MonoBehaviour
 
     [Header("Info")]
     private string testInfoString;
+
+    [Header("Auto Game System")]
+    public int autoGameCount;
+    public TextMeshProUGUI autoGameButtonText;
+    public TextMeshProUGUI autoGameCountText;
+    public Button gamePlayButton;
+    public bool isAutoGameStart = false;
 
 
     void Start()
@@ -569,6 +578,63 @@ public class Board : MonoBehaviour
         }
     }
 
+    #region AutoGameSystem
+
+    public void ChangeAutoGameState()
+    {
+        isAutoGameStart = !isAutoGameStart;
+        StartCoroutine(AutoGameIE());
+
+        if(isAutoGameStart)
+        {
+            autoGameButtonText.text = "DURDUR";
+        }
+        else
+        {
+            autoGameButtonText.text = "BASLAT";
+        }
+    }
+
+    public void AddAutoGame()
+    {
+        autoGameCount++;
+        autoGameCountText.text = autoGameCount.ToString();
+    }
+
+    public void ReduceAutoGame()
+    {
+        autoGameCount--;
+        autoGameCountText.text = autoGameCount.ToString();
+
+    }
+
+    IEnumerator AutoGameIE()
+    {
+       
+        while(isAutoGameStart)
+        {
+            gamePlayButton.interactable = false;
+            yield return new WaitUntil(() => canPlay);
+
+
+            if(autoGameCount>0)
+            {
+                autoGameCount--;
+                autoGameCountText.text = autoGameCount.ToString();
+
+                Play();
+            }
+            else
+            {
+                isAutoGameStart = false;
+                autoGameButtonText.text = "BASLAT";
+            }
+           
+        }
+        gamePlayButton.interactable = true;
+    }
+
+    #endregion
 
 
     void OnGUI()
@@ -581,4 +647,6 @@ public class Board : MonoBehaviour
         // Ekranýn sol üst köþesine metni yazdýr
         GUI.Label(new Rect(10, 10, 500, 30), testInfoString, stil);
     }
+
+
 }
