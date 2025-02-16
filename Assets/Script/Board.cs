@@ -277,7 +277,7 @@ public class Board : MonoBehaviour
             }
         }
 
-        Debug.Log(tag+" : "+count);
+        //Debug.Log(tag+" : "+count);
         return count;
     }
     /*
@@ -418,12 +418,39 @@ public class Board : MonoBehaviour
         
     }
 
+    IEnumerator RefillBoardIE()
+    {
+        for (int i = 0; i < width; i++)
+        {
+            yield return new WaitForSeconds(0.05f);
+            for (int j = 0; j < height; j++)
+            {
+                yield return new WaitForSeconds(0.05f);
+
+                if (allCandies[i, j] == null)
+                {
+                    Vector2 tempPos = new Vector2(i, j + 10);
+                    int candyToUse = Random.Range(0, candies.Length);
+
+                    GameObject candy = Instantiate(candies[candyToUse], tempPos, Quaternion.identity);
+                    candy.GetComponent<Candy>().targetX = i;
+                    candy.GetComponent<Candy>().targetY = j;
+                    candy.gameObject.transform.SetParent(candyParent);
+                    allCandies[i, j] = candy;
+                }
+            }
+        }
+    }
+    /*
     void RefillBoard()
     {
         for (int i = 0; i < width; i++)
         {
+            yield return new WaitForSeconds(0.1f);
             for (int j = 0; j < height; j++)
             {
+                yield return new WaitForSeconds(0.1f);
+
                 if (allCandies[i,j]==null)
                 {
                     Vector2 tempPos = new Vector2(i, j+10);
@@ -438,10 +465,11 @@ public class Board : MonoBehaviour
             }
         }
     }
-
+    */
     IEnumerator FillBoardCo()
     {
-        RefillBoard();
+        //RefillBoard();
+        StartCoroutine(RefillBoardIE());
         //yield return new WaitForSeconds(0.5f);
 
         Debug.LogWarning(checkIsReachCandy());
@@ -455,7 +483,7 @@ public class Board : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
-        //canPlay = true;
+        canPlay = true;
         Debug.Log("Refill!");
 
 
@@ -500,8 +528,13 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
 
-        CheckAllMatches();
-        canPlay = true;
+        if(CheckAllMatches()==false)
+        {
+            canPlay = true;
+        }
+        
+
+        
     }
 
     bool checkIsReachCandy()
