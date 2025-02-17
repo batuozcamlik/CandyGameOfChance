@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor;
 using UnityEditor.Search;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -44,6 +45,9 @@ public class Board : MonoBehaviour
     [Range(0f, 100f)]
     public int freeSpinPosiblty;
     public GameObject freeSpinGameObj;
+    public bool isFreeSpingStart = false;
+    public GameObject playCanvas;
+    public int currentFreeSpin;
 
     [Header("Info")]
     private string testInfoString;
@@ -117,37 +121,43 @@ public class Board : MonoBehaviour
         bool checkFreeSpin = FreeSpinCalculateProb();
         List<Vector2> freeSpinSpawnPos = new List<Vector2>();
 
-        if(checkFreeSpin)
+        if (!isFreeSpingStart)
         {
-            for (int i = 0; i < 4; i++)
-            {
-                Vector2 newPos;
-                do
-                {
-                    newPos = new Vector2(Random.Range(0, width), Random.Range(0, height));
-                }
-                while (freeSpinSpawnPos.Contains(newPos)); // Eðer liste zaten bu pozisyonu içeriyorsa, tekrar üret
+         
 
-                freeSpinSpawnPos.Add(newPos);
-            }
-        }
-        else
-        {
-            checkFreeSpin = true;
-            for (int i = 0; i < Random.Range(0,4); i++)
+            if (checkFreeSpin)
             {
-                Vector2 newPos;
-                do
+                for (int i = 0; i < 4; i++)
                 {
-                    newPos = new Vector2(Random.Range(0, width), Random.Range(0, height));
-                }
-                while (freeSpinSpawnPos.Contains(newPos)); // Eðer liste zaten bu pozisyonu içeriyorsa, tekrar üret
+                    Vector2 newPos;
+                    do
+                    {
+                        newPos = new Vector2(Random.Range(0, width), Random.Range(0, height));
+                    }
+                    while (freeSpinSpawnPos.Contains(newPos)); // Eðer liste zaten bu pozisyonu içeriyorsa, tekrar üret
 
-                freeSpinSpawnPos.Add(newPos);
+                    freeSpinSpawnPos.Add(newPos);
+                }
             }
+            else
+            {
+                checkFreeSpin = true;
+                for (int i = 0; i < Random.Range(0, 4); i++)
+                {
+                    Vector2 newPos;
+                    do
+                    {
+                        newPos = new Vector2(Random.Range(0, width), Random.Range(0, height));
+                    }
+                    while (freeSpinSpawnPos.Contains(newPos)); // Eðer liste zaten bu pozisyonu içeriyorsa, tekrar üret
+
+                    freeSpinSpawnPos.Add(newPos);
+                }
+            }
+
         }
-        
-        
+
+
 
         for (int i = 0; i < width; i++)
         {
@@ -199,20 +209,7 @@ public class Board : MonoBehaviour
         }
     }
 
-    public bool FreeSpinCalculateProb()
-    {
-        int a = Random.Range(0, 101); 
-
-        if (a < freeSpinPosiblty) 
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-
-    }
+   
   
 
     public bool CheckAllMatches()
@@ -289,25 +286,7 @@ public class Board : MonoBehaviour
         //Debug.Log(tag+" : "+count);
         return count;
     }
-    /*
-    public void destroyCandy(string tag)
-    {
-        for (int i = 0; i < width; i++)
-        {
-            for (int j = 0; j < height; j++)
-            {
-                if (allCandies[i, j] != null)
-                {
-                    if (allCandies[i, j].tag == tag)
-                    {
-                        destroyMathesAt(i, j);
-                    }
-                }
-            }
-        }
-
-        StartCoroutine(DecreaseRowCo());
-    }*/
+    
 
     IEnumerator DestroyCandyCO(string tag)
     {
@@ -450,31 +429,7 @@ public class Board : MonoBehaviour
             }
         }
     }
-    /*
-    void RefillBoard()
-    {
-        for (int i = 0; i < width; i++)
-        {
-            yield return new WaitForSeconds(0.1f);
-            for (int j = 0; j < height; j++)
-            {
-                yield return new WaitForSeconds(0.1f);
-
-                if (allCandies[i,j]==null)
-                {
-                    Vector2 tempPos = new Vector2(i, j+10);
-                    int candyToUse = Random.Range(0, candies.Length);
-
-                    GameObject candy = Instantiate(candies[candyToUse],tempPos,Quaternion.identity);
-                    candy.GetComponent<Candy>().targetX = i;
-                    candy.GetComponent<Candy>().targetY = j;
-                    candy.gameObject.transform.SetParent(candyParent);
-                    allCandies[i, j] = candy;
-                }
-            }
-        }
-    }
-    */
+    
     IEnumerator FillBoardCo()
     {
         //RefillBoard();
@@ -537,13 +492,40 @@ public class Board : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
 
-        if(CheckAllMatches()==false)
+       
+
+
+        int freeSpinCount = 0;
+        List<GameObject> freeSpinObjList= new List<GameObject>();
+
+        for (int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                if(allCandies[i, j].tag == "FreeSpin")
+                {
+                    freeSpinObjList.Add(allCandies[i, j]);
+                    freeSpinCount++;
+                }
+            }
+        }
+
+        for (int i = 0; i < freeSpinObjList.Count; i++)
+        {
+            freeSpinObjList[i].transform.DOScale(1.5f, 1);
+            freeSpinObjList[i].transform.DORotate(new Vector3(0, 0, 270), 2);
+        }
+
+        if(freeSpinCount==4)
+        {
+            PlayFreeSpin();
+        }
+
+
+        if (CheckAllMatches() == false )
         {
             canPlay = true;
         }
-        
-
-        
     }
 
     bool checkIsReachCandy()
@@ -578,6 +560,9 @@ public class Board : MonoBehaviour
         }
     }
 
+   
+
+
     #region AutoGameSystem
 
     public void ChangeAutoGameState()
@@ -603,8 +588,12 @@ public class Board : MonoBehaviour
 
     public void ReduceAutoGame()
     {
-        autoGameCount--;
-        autoGameCountText.text = autoGameCount.ToString();
+        if(autoGameCount>0)
+        {
+            autoGameCount--;
+            autoGameCountText.text = autoGameCount.ToString();
+        }
+     
 
     }
 
@@ -615,14 +604,18 @@ public class Board : MonoBehaviour
         {
             gamePlayButton.interactable = false;
             yield return new WaitUntil(() => canPlay);
+            yield return new WaitUntil(() => checkIsReachCandy());
 
 
-            if(autoGameCount>0)
+            if (autoGameCount>0)
             {
                 autoGameCount--;
                 autoGameCountText.text = autoGameCount.ToString();
 
-                Play();
+                //Play();
+                
+
+                moneyMng.Play();
             }
             else
             {
@@ -632,6 +625,63 @@ public class Board : MonoBehaviour
            
         }
         gamePlayButton.interactable = true;
+    }
+
+    #endregion
+
+    #region Free Spin System
+    public bool FreeSpinCalculateProb() //Free spin olasýlýðý hesaplanýyor
+    {
+        int a = Random.Range(0, 101);
+
+        if (a < freeSpinPosiblty)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void PlayFreeSpin()
+    {
+
+        isFreeSpingStart = true;
+        StartCoroutine(PlayFreeSpinIE());
+    }
+
+    IEnumerator PlayFreeSpinIE()
+    {
+        yield return new WaitForSeconds(1f);
+
+        playCanvas.GetComponent<RectTransform>().DOAnchorPos(new Vector2(1000,0), 1f);
+        Camera.main.transform.DOMoveX(2.5f, 1f);
+
+        yield return new WaitForSeconds(1f);
+
+        while (isFreeSpingStart)
+        {
+            if(currentFreeSpin>0)
+            {
+                yield return new WaitUntil(() => canPlay);
+                yield return new WaitUntil(() => checkIsReachCandy());
+
+                Play();
+                currentFreeSpin--;
+            }
+            else
+            {
+                isFreeSpingStart = false;
+            }
+            
+        }
+
+        yield return new WaitUntil(() => canPlay);
+        yield return new WaitUntil(() => checkIsReachCandy());
+        playCanvas.GetComponent<RectTransform>().DOAnchorPos(new Vector2(0, 0), 1f);
+        Camera.main.transform.DOMoveX(5f, 1f);
+
     }
 
     #endregion

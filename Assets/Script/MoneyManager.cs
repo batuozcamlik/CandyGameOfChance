@@ -76,7 +76,7 @@ public class MoneyManager : MonoBehaviour
         }
         else
         {
-            if (currentBet - a > 0)
+            if (currentBet - a > 10)
             {
                 currentBet += a;
             }
